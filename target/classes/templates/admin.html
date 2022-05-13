@@ -23,7 +23,7 @@
     <div class="col col-md-2 bg-white flex-column mb-2">
         <ul class="nav flex-column nav-pills ">
             <div class="list-group">
-                <a th:href="@{/admin/}" class="list-group-item active">Admin</a>
+                <a th:href="@{/admin/users/}" class="list-group-item active">Admin</a>
                 <a class="nav-link" href="/user/">User</a>
             </div>
         </ul>
@@ -89,7 +89,7 @@
                                                             </button>
                                                         </div>
                                                         <form class="form-container " th:method="PATCH"
-                                                              th:action="@{/admin/{id}/edit(id=${user.getId()})}"
+                                                              th:action="@{/admin/user/{id}/edit(id=${user.getId()})}"
                                                               th:object="${user}">
                                                             <div class="modal-body text-center offset-md-2 col-md-8">
                                                                 <div class="form-group">
@@ -125,12 +125,10 @@
                                                                 <div class="form-group">
                                                                     <b>Role </b>
                                                                     <br>
-                                                                    <select class="form-control" name="roles"
-                                                                            multiple size="2" required>
-                                                                        <option value=1>ADMIN
-                                                                        </option>
-                                                                        <option value=2>USER
-                                                                        </option>
+                                                                    <select multiple class="form-control" name="roleList"
+                                                                            style="height: 60px">
+                                                                        <option value="1">ADMIN</option>
+                                                                        <option value="2">USER</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -165,7 +163,7 @@
                                                             </button>
                                                         </div>
                                                         <form class="form-container " th:method="DELETE"
-                                                              th:action="@{/admin/{id}(id=${user.id})}"
+                                                              th:action="@{/admin/user/{id}(id=${user.id})}"
                                                               th:object="${user}">
                                                             <div class="modal-body text-center offset-md-2 col-md-8">
                                                                 <div class="form-group">
@@ -238,14 +236,14 @@
                         <tr>
                             <th>
                                 <div class="bg-white text-center">
-                                    <form class="offset-md-4 col-md-4" method="POST" action="/admin/new">
+                                    <form class="offset-md-4 col-md-4" method="POST" action="/admin/user/new">
                                         <div class="form-group">
                                             <label for="name">First name </label>
                                             <input type="text" class="form-control" name="name" id="name"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="lastname">Last name</label>
-                                            <input type="text" class="form-control" name="last_name" id="lastname"/>
+                                            <input type="text" class="form-control" name="lastName" id="lastname"/>
                                         </div>
                                         <label for="age">Age</label>
                                         <input type="number" class="form-control" name="age" id="age"/>
@@ -258,10 +256,14 @@
                                         <br>
                                         <label for="role">Roles </label>
                                         <br>
-                                        <select class="custom-select" id="role" name="roles" multiple size="2" required>
-                                            <option value=1>ADMIN</option>
-                                            <option value=2>USER</option>
-                                        </select>
+                                        <div class="form-group">
+
+                                            <select multiple class="form-control" name="roleList"
+                                                    style="height: 60px">
+                                                <option value="1">ADMIN</option>
+                                                <option value="2">USER</option>
+                                            </select>
+                                        </div>
                                         <br><br>
                                         <button type="submit" class="btn btn-success" value="Add">Add new User</button>
                                     </form>

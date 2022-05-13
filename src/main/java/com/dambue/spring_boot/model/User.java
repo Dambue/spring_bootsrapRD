@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -41,14 +42,14 @@ public class User implements UserDetails {
 
     }
 
-    public User(String name, String lastName, Byte age, String email, String password, Set<Role> roles) {
+    public User(String name, String lastName, Byte age, String email, String password) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.password = password;
-        this.roles = roles;
     }
+
 
     public String getEmail() {
         return email;
@@ -105,7 +106,7 @@ public class User implements UserDetails {
     public String findRole() {
         StringBuilder roles = new StringBuilder();
         for (Role role : getRoles()) {
-            roles.append(role.getRole().replaceAll("ROLE_", "") + " ");
+            roles.append(role.getRole()).append(" ");
         }
         return roles.toString();
     }
@@ -143,5 +144,18 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

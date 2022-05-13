@@ -1,12 +1,9 @@
 package com.dambue.spring_boot.service;
 
-import com.dambue.spring_boot.model.Role;
+import com.dambue.spring_boot.dao.RoleDAOImpl;
+import com.dambue.spring_boot.dao.UserDAOImpl;
 import com.dambue.spring_boot.model.User;
-import com.dambue.spring_boot.repository.RoleRepository;
-import com.dambue.spring_boot.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,49 +12,47 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserDAOImpl userRepository;
+    private final RoleDAOImpl roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private final RoleRepository roleRepository;
-
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserDAOImpl userRepository, RoleDAOImpl roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public List<User> getUsersWithRoles() {
+        return userRepository.getUsersWithRoles();
     }
 
     @Override
     @Transactional
-    public List<User> index() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    @Transactional
-    public void save(User user) {
+    public void save(User user, Long[] roles) {
+        user.setRoles(roleRepository.findRolesById(roles));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        userRepository.delete(id);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.getUserById(id);
     }
 
     @Override
     @Transactional
-    public User show(Long id) {
-        return userRepository.findById(id).get();
-    }
-
-    @Override
-    @Transactional
-    public void update(Long id, User updUser) {
-        userRepository.findById(id).get();
-        userRepository.save(updUser);
-    }
-
-    @Override
-    @Transactional
-    public Role findRoleById(Long id) {
-        return roleRepository.findRoleById(id);
+    public void update(Long id, User updUser, Long[] roles) {
+        updUser.setRoles(roleRepository.findRolesById(roles));
+        if (!userRepository.getUserPassword(id).equals(updUser.getPassword())) {
+            updUser.setPassword(passwordEncoder.encode(updUser.getPassword()));
+        }
+        userRepository.update(id, updUser);
     }
 }

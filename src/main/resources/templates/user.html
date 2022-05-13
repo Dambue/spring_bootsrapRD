@@ -22,7 +22,7 @@
     <div class="col col-md-2 bg-white flex-column mb-2">
         <ul class="nav flex-column nav-pills ">
             <div sec:authorize="hasAnyRole('ROLE_ADMIN')">
-                <a th:href="@{/admin/}" class="list-group-item">Admin</a>
+                <a th:href="@{/admin/users}" class="list-group-item">Admin</a>
             </div>
             <div>
                 <a class="nav-link active" href="/user">User</a>
